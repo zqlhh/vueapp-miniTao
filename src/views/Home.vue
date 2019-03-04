@@ -3,7 +3,13 @@
     <div class="content">
       <!-- 搜索框 -->
       <div class="search">
-        <input type="text" placeholder="请输入搜索内容" v-model="searchText" />
+        <input
+          type="text"
+          placeholder="请输入搜索内容"
+          @focus="onFocus"
+          @blur="onBlur"
+          v-model="searchText"
+        />
         <span class="search-icon" @click="onSearch"></span>
       </div>
       <!-- 商品区域 -->
@@ -57,6 +63,12 @@ export default {
     this.initScroll();
   },
   methods: {
+    onFocus() {
+      this.$emit("hide", false);
+    },
+    onBlur() {
+      this.$emit("show", true);
+    },
     // 搜索
     onSearch() {
       this.dataList = [];

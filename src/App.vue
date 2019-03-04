@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <div class="viewport-wrapper">
-      <router-view />
+      <router-view @hide="hide" @show="show" />
     </div>
-    <tab-bar></tab-bar>
+    <tab-bar v-if="visiable"></tab-bar>
   </div>
 </template>
 
@@ -12,6 +12,20 @@ import TabBar from "./components/tab-bar/tab-bar";
 export default {
   components: {
     TabBar
+  },
+  data() {
+    return {
+      visiable: true
+    };
+  },
+  methods: {
+    hide(val) {
+      console.log(val);
+      this.visiable = val;
+    },
+    show(val) {
+      this.visiable = val;
+    }
   }
 };
 </script>
