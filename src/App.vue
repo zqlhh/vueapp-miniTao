@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="viewport-wrapper">
-      <router-view @hide="hide" @show="show" />
+      <router-view />
     </div>
     <tab-bar v-if="visiable"></tab-bar>
   </div>
@@ -15,17 +15,14 @@ export default {
   },
   data() {
     return {
-      visiable: true
+      visiable: true,
+      bodyHeight: ""
     };
   },
-  methods: {
-    hide(val) {
-      console.log(val);
-      this.visiable = val;
-    },
-    show(val) {
-      this.visiable = val;
-    }
+  created() {
+    this.bodyHeight = document.body.clientHeight;
+    document.getElementsByTagName("body")[0].style.minHeight =
+      this.bodyHeight + "px";
   }
 };
 </script>
@@ -38,7 +35,6 @@ body,
   width: 100%;
   height: 100%;
   color: #707070;
-  background: #fff;
   overflow: hidden;
 
   .viewport-wrapper {
@@ -47,6 +43,7 @@ body,
     left: 0;
     bottom: 50px;
     right: 0;
+    background: #ffffff;
     overflow: hidden;
   }
 }

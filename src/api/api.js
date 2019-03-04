@@ -13,7 +13,7 @@ const searchGood = ({ pageNum, pageSize, searchText }) => {
 
 // 淘口令
 
-const produceLink = params => {
+const token = params => {
   return http.post("/item/token", {
     couponClickUrl: params.couponClickUrl,
     pictUrl: params.pictUrl,
@@ -21,4 +21,4 @@ const produceLink = params => {
   });
 };
 
-export { getGoods, searchGood, produceLink };
+export { searchGood, token };

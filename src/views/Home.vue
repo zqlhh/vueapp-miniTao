@@ -1,33 +1,51 @@
 <template>
-  <div class="home" ref="home">
+  <div
+    class="home"
+    ref="home"
+  >
     <div class="content">
       <!-- 搜索框 -->
       <div class="search">
         <input
+          ref="input"
           type="text"
           placeholder="请输入搜索内容"
-          @focus="onFocus"
-          @blur="onBlur"
           v-model="searchText"
         />
-        <span class="search-icon" @click="onSearch"></span>
+        <span
+          class="search-icon"
+          @click="onSearch"
+        ></span>
       </div>
       <!-- 商品区域 -->
-      <ul class="good-wrapper">
-        <li class="item" v-for="(good, index) in dataList" :key="index">
+      <ul
+        class="good-wrapper"
+        @click="onClickWrapper"
+      >
+        <li
+          class="item"
+          contenteditable="true"
+          v-for="(good, index) in dataList"
+          :key="index"
+          @click.stop.prevent="onShare(good)"
+        >
           <div class="left">
-            <img :src="good.pictUrl" alt="" width="80" height="80" />
+            <img
+              :src="good.pictUrl"
+              alt=""
+              width="80"
+              height="80"
+            />
           </div>
           <div class="right">
             <h1 class="title">{{ good.title | _dealTitle }}</h1>
             <div class="price">
               <span class="old-price">原价: {{ good.zkFinalPrice }}</span>
-              <span class="new-price"
-                >券后:
-                {{ _dealPrice(good.zkFinalPrice, good.couponInfo) }}</span
-              >
+              <span class="new-price">券后:
+                {{ _dealPrice(good.zkFinalPrice, good.couponInfo) }}</span>
             </div>
           </div>
+          <span class="tkl">淘</span>
         </li>
       </ul>
       <!-- 返回顶部 -->
@@ -38,7 +56,9 @@
 
 <script>
 import BScroll from "better-scroll";
-import { searchGood, produceLink } from "../api/api";
+import copy from "../utils/copy.js";
+import { searchGood, token } from "../api/api";
+
 export default {
   name: "home",
   data() {
@@ -63,14 +83,27 @@ export default {
     this.initScroll();
   },
   methods: {
-    onFocus() {
-      this.$emit("hide", false);
+    onClickWrapper() {
+      this.hideKeyboard();
     },
-    onBlur() {
-      this.$emit("show", true);
+    hideKeyboard() {
+      this.$refs.input.blur();
+    },
+    onShare(good) {
+      // token({
+      //   couponClickUrl: good.couponClickUrl,
+      //   pictUrl: good.pictUrl,
+      //   title: good.title
+      // }).then((result) => {
+      //   console.log(result)
+      // }).catch((err) => {
+      //   console.log(err);
+      // });
+      copy("喵喵");
     },
     // 搜索
     onSearch() {
+      this.hideKeyboard();
       this.dataList = [];
       this.loadData();
     },
@@ -157,6 +190,7 @@ export default {
     }
     .good-wrapper {
       .item {
+        position: relative;
         display: flex;
         justify-content: flex-start;
         padding: 15px 0;
@@ -183,7 +217,6 @@ export default {
           .price {
             font-size: 14px;
             margin-bottom: 4px;
-            font-weight: 700;
 
             .old-price {
               margin-right: 10px;
@@ -194,6 +227,17 @@ export default {
               color: rgb(187, 56, 24);
             }
           }
+        }
+
+        .tkl {
+          position: absolute;
+          bottom: 20px;
+          right: 10px;
+          padding: 5px;
+          font-size: 14px;
+          border-radius: 50%;
+          color: #fff;
+          background-image: linear-gradient(135deg, #fccf31 10%, #f55555 100%);
         }
       }
     }

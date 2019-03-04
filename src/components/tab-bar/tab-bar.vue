@@ -34,7 +34,7 @@ export default {
 
 <style lang="scss" scoped>
 .tab-bar {
-  position: fixed;
+  position: absolute;
   left: 0;
   bottom: 0;
   right: 0;
@@ -57,7 +57,7 @@ export default {
     }
 
     &.router-link-active {
-      color: #bb3818;
+      color: rgb(233, 102, 27);
     }
   }
 }
