@@ -1,24 +1,21 @@
 import http from "../utils/http.js";
+const headers = {
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+  },
+  ISFORMDATA: true
+};
 
 // 商品搜索
-const searchGood = ({ pageNum, pageSize, searchText }) => {
+const searchGood = params => {
   return http.get("/item/search", {
-    params: {
-      pageNum,
-      pageSize,
-      searchText
-    }
+    params
   });
 };
 
 // 淘口令
-
-const token = params => {
-  return http.post("/item/token", {
-    couponClickUrl: params.couponClickUrl,
-    pictUrl: params.pictUrl,
-    title: params.title
-  });
+const token = data => {
+  return http.post("/item/token", data, headers);
 };
 
 export { searchGood, token };

@@ -2,17 +2,10 @@
   <div class="recommend">
     <h1 class="recommend-title">每日推荐</h1>
     <div class="recommend-content">
-      <img
-        class="pic"
-        :src="pictUrl"
-        alt=""
-      />
+      <img class="pic" :src="pictUrl" alt="" />
       <h2 class="title">{{ title }}</h2>
       <p class="text">{{ couponInfo }}</p>
-      <button
-        class="copy css-3d-btn"
-        @click="onCopy"
-      >淘</button>
+      <button class="copy css-3d-btn" @click="onCopy">淘</button>
     </div>
   </div>
 </template>
@@ -24,6 +17,7 @@ import { token } from "../api/api";
 
 export default {
   name: "Recommend",
+  inject: ["showToast"],
   data() {
     return {
       pictUrl: "",
@@ -37,27 +31,37 @@ export default {
   methods: {
     getInfo() {
       if (!localStorage.goodInfo) {
-        const {
-          couponInfo,
-          itemUrl,
-          pictUrl,
-          title,
-          zkFinalPrice
-        } = urlParse();
-        this.pictUrl = pictUrl;
-        this.title = title;
-        this.couponInfo = couponInfo;
-        localStorage.goodInfo = JSON.stringify(urlParse());
+        const goodInfo = urlParse();
+        this.setData(goodInfo);
+        localStorage.goodInfo = JSON.stringify(goodInfo);
       } else {
-        const good = JSON.parse(localStorage.goodInfo);
-        this.pictUrl = good.pictUrl;
-        this.title = good.title;
-        this.couponInfo = good.couponInfo;
+        const localGoodInfo = JSON.parse(localStorage.goodInfo);
+        this.setData(localGoodInfo);
       }
-      console.log(JSON.parse(localStorage.goodInfo))
     },
+    // 设置数据项
+    setData(obj) {
+      this.pictUrl = obj.pictUrl;
+      this.title = obj.title;
+      this.couponInfo = obj.couponInfo;
+      this.couponClickUrl = obj.couponClickUrl;
+      this.zkFinalPrice = obj.zkFinalPrice;
+    },
+    // 复制淘口令
     onCopy() {
-      copy("喵喵");
+      token({
+        couponClickUrl: this.couponClickUrl,
+        pictUrl: this.pictUrl,
+        title: this.title
+      })
+        .then(result => {
+          if (!result.data.data) return;
+          copy(result.data.data.model || "复制出错了");
+          this.showToast();
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 };

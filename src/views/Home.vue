@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="home"
-    ref="home"
-  >
+  <div class="home" ref="home">
     <div class="content">
       <!-- 搜索框 -->
       <div class="search">
@@ -12,16 +9,10 @@
           placeholder="请输入搜索内容"
           v-model="searchText"
         />
-        <span
-          class="search-icon"
-          @click="onSearch"
-        ></span>
+        <span class="search-icon" @click="onSearch"></span>
       </div>
       <!-- 商品区域 -->
-      <ul
-        class="good-wrapper"
-        @click="onClickWrapper"
-      >
+      <ul class="good-wrapper" @click="onClickWrapper">
         <li
           class="item"
           contenteditable="true"
@@ -30,27 +21,26 @@
           @click.stop.prevent="onShare(good)"
         >
           <div class="left">
-            <img
-              :src="good.pictUrl"
-              alt=""
-              width="80"
-              height="80"
-            />
+            <img :src="good.pictUrl" alt="" width="80" height="80" />
           </div>
           <div class="right">
             <h1 class="title">{{ good.title | _dealTitle }}</h1>
             <div class="price">
               <span class="old-price">原价: {{ good.zkFinalPrice }}</span>
-              <span class="new-price">券后:
-                {{ _dealPrice(good.zkFinalPrice, good.couponInfo) }}</span>
+              <span class="new-price"
+                >券后:
+                {{ _dealPrice(good.zkFinalPrice, good.couponInfo) }}</span
+              >
             </div>
           </div>
           <span class="tkl">淘</span>
         </li>
       </ul>
-      <!-- 返回顶部 -->
-      <span class="top"></span>
     </div>
+    <!-- 返回顶部 -->
+    <span class="top" @click="onScrollTop">
+      <img src="../assets/images/top.png" alt="" width="30" height="30" />
+    </span>
   </div>
 </template>
 
@@ -61,6 +51,7 @@ import { searchGood, token } from "../api/api";
 
 export default {
   name: "home",
+  inject: ["showToast"],
   data() {
     return {
       pageNum: 1,
@@ -83,23 +74,32 @@ export default {
     this.initScroll();
   },
   methods: {
+    onScrollTop() {
+      console.log(11);
+      this.scroll.scrollTo(0, 0, 300);
+    },
+    // 点击正文项时
     onClickWrapper() {
       this.hideKeyboard();
     },
+    // 隐藏键盘
     hideKeyboard() {
       this.$refs.input.blur();
     },
+    // 复制淘口令
     onShare(good) {
-      // token({
-      //   couponClickUrl: good.couponClickUrl,
-      //   pictUrl: good.pictUrl,
-      //   title: good.title
-      // }).then((result) => {
-      //   console.log(result)
-      // }).catch((err) => {
-      //   console.log(err);
-      // });
-      copy("喵喵");
+      token({
+        couponClickUrl: good.couponClickUrl,
+        pictUrl: good.pictUrl,
+        title: good.title
+      })
+        .then(result => {
+          copy(result.data.data.model);
+          this.showToast();
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     // 搜索
     onSearch() {
@@ -158,6 +158,7 @@ export default {
 
 <style lang="scss" scoped>
 .home {
+  position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -241,6 +242,13 @@ export default {
         }
       }
     }
+  }
+  .top {
+    position: absolute;
+    right: 20px;
+    bottom: 40px;
+    background: #fff;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   }
 }
 </style>
